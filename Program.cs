@@ -39,3 +39,28 @@ db.Orders.AddRange(order1, order2, order3, order4);
 db.SaveChanges();
 
 Console.WriteLine("Данные успешно добавлены!");
+Console.WriteLine("=== Шаг 4 ===");
+
+// 1. Спички дешевле 100 ₽ от дешёвых дорог
+Console.WriteLine("--- Спички дешевле 100 руб ---");
+var cheapProducts = db.Products
+    .Where(p => p.Price < 100)  // фильтр
+    .OrderBy(p => p.Price)      // сортировка
+    .ToList();                  // выполнить запрос
+
+foreach (var p in cheapProducts)
+    Console.WriteLine($"{p.Name} — {p.Price} руб.");
+
+// 2. Сколько видов спичек есть на складе (остаток > 0)
+var inStockCount = db.Products.Count(p => p.Stock > 0);
+Console.WriteLine($"\nВидов спичек в наличии: {inStockCount}");
+
+// 3. Три самых дорогих товара
+Console.WriteLine("\n--- Топ-3 самых дорогих ---");
+var top3 = db.Products
+    .OrderByDescending(p => p.Price) // сортировка по убыванию
+    .Take(3)                         // берем только 3
+    .ToList();
+
+foreach (var p in top3)
+    Console.WriteLine($"{p.Name} — {p.Price} руб.");
