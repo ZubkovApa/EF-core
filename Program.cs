@@ -84,3 +84,25 @@ foreach (var order in allOrders)
 }
 
 Console.WriteLine($"\nОбщая выручка: {totalSum} ₽");
+
+Console.WriteLine("\n=== Шаг 5 ===");
+
+// 1. Меняем телефон Ивану
+var ivanInDb = db.Customers.First(c => c.Name == "Иван Петров");
+ivanInDb.Phone = "+7 900 999-00-00";
+
+// 2. Поднимаем цены на 10% для всех товаров
+var allProducts = db.Products.ToList(); // достаем все товары в память
+foreach (var p in allProducts)
+{
+    p.Price = p.Price * 1.1m; // умножаем на 1.1 (не забывай про букву m для decimal)
+}
+
+// 3. Одному товару ставим остаток 0 (например, "Водостойкие")
+var productToZero = db.Products.First(p => p.Name == "Водостойкие");
+productToZero.Stock = 0;
+
+// Сохраняем все изменения разом
+db.SaveChanges(); 
+
+Console.WriteLine("Изменения сохранены (телефон, цены +10%, остаток 0)");
