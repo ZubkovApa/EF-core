@@ -64,3 +64,23 @@ var top3 = db.Products
 
 foreach (var p in top3)
     Console.WriteLine($"{p.Name} — {p.Price} руб.");
+
+    Console.WriteLine("\n--- Все заказы ---");
+// Include нужен, чтобы EF подтянул данные о покупателе и товаре (их имена)
+var allOrders = db.Orders
+    .Include(o => o.Customer) // подтягиваем покупателя
+    .Include(o => o.Product)  // подтягиваем товар
+    .ToList();
+
+decimal totalSum = 0;
+
+foreach (var order in allOrders)
+{
+    // Сумма заказа = цена товара * количество
+    decimal orderSum = order.Product.Price * order.Quantity;
+    totalSum += orderSum;
+    
+    Console.WriteLine($"{order.Customer.Name} — {order.Product.Name} — {order.Quantity} шт. — {orderSum} ₽");
+}
+
+Console.WriteLine($"\nОбщая выручка: {totalSum} ₽");
