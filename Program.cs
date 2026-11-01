@@ -106,3 +106,27 @@ productToZero.Stock = 0;
 db.SaveChanges(); 
 
 Console.WriteLine("Изменения сохранены (телефон, цены +10%, остаток 0)");
+
+Console.WriteLine("\n=== Шаг 6 ===");
+
+// 1. Удаляем Ольгу
+var olgaToDelete = db.Customers.First(c => c.Name == "Ольга Смирнова");
+db.Customers.Remove(olgaToDelete);
+
+// 2. Находим все товары с нулевым остатком (это наши Водостойкие)
+var outOfStockProducts = db.Products.Where(p => p.Stock == 0).ToList();
+
+// Удаляем их из базы
+db.Products.RemoveRange(outOfStockProducts); 
+
+// Применяем изменения (удаляем и Ольгу, и товары)
+db.SaveChanges();
+
+// 3. Считаем, сколько товаров осталось
+var remainingProductsCount = db.Products.Count();
+Console.WriteLine($"Удалено товаров с нулевым остатком: {outOfStockProducts.Count}");
+Console.WriteLine($"Товаров осталось в базе: {remainingProductsCount}");
+
+
+// Вопрос: почему удалились заказы Ольги?
+// Ответ: Из-за ON DELETE CASCADE. Для магазина это плохо, так как теряется история покупок.
